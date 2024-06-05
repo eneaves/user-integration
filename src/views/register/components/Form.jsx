@@ -1,11 +1,18 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Form = () => {
   const [form, setForm] = useState({
     name: '',
     email: '',
-    age: ''
+    phone: '',
+    age: '',
+    address: '',
+    education: ''
   });
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     const newForm = {
@@ -15,22 +22,47 @@ const Form = () => {
     setForm(newForm);
   };
 
+  const validateForm = () => {
+    const newErrors = {};
+    Object.keys(form).forEach((key) => {
+      if (!form[key]) {
+        newErrors[key] = 'Este campo es obligatorio';
+      }
+    });
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmitForm = async (e) => {
     e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+
+    const formData = {
+      ...form,
+      age: form.age === '' ? null : parseInt(form.age, 10),
+    };
+
     try {
       const res = await fetch('http://localhost:3000/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(formData),
       });
-      return res.status === 200
-        ? alert('Registro exitoso')
-        : alert('Error al registrar');
+
+      if (res.status === 200 || res.status === 201) {
+        alert('Registro exitoso');
+        navigate('/');
+      } else {
+        const errorData = await res.json();
+        alert(`Error al registrar: ${errorData.message}`);
+      }
     } catch (error) {
       alert('Error al registrar');
-      throw new Error('Error al registrar');
+      console.error('Error al registrar:', error);
     }
   };
 
@@ -46,7 +78,9 @@ const Form = () => {
           placeholder="Nombre"
           value={form.name}
           onChange={handleChange}
+          required
         />
+        {errors.name && <p style={{ color: 'red' }}>{errors.name}</p>}
         <p>Email</p>
         <input
           style={{ height: '45px', width:'60%', paddingLeft: '5px', borderRadius: '5px', border: '1px solid #399C7E'}}
@@ -55,16 +89,53 @@ const Form = () => {
           placeholder="Email"
           value={form.email}
           onChange={handleChange}
+          required
         />
+        {errors.email && <p style={{ color: 'red' }}>{errors.email}</p>}
+        <p>Teléfono</p>
+        <input
+          style={{ height: '45px', width:'60%', paddingLeft: '5px', borderRadius: '5px', border: '1px solid #399C7E'}}
+          type="text"
+          name="phone"
+          placeholder="Teléfono"
+          value={form.phone}
+          onChange={handleChange}
+          required
+        />
+        {errors.phone && <p style={{ color: 'red' }}>{errors.phone}</p>}
         <p>Edad</p>
         <input
           style={{ height: '45px', width:'60%', paddingLeft: '5px', borderRadius: '5px', border: '1px solid #399C7E'}}
-          type="age"
+          type="number"
           name="age"
-          placeholder="Age"
+          placeholder="Edad"
           value={form.age}
           onChange={handleChange}
+          required
         />
+        {errors.age && <p style={{ color: 'red' }}>{errors.age}</p>}
+        <p>Dirección</p>
+        <input
+          style={{ height: '45px', width:'60%', paddingLeft: '5px', borderRadius: '5px', border: '1px solid #399C7E'}}
+          type="text"
+          name="address"
+          placeholder="Dirección"
+          value={form.address}
+          onChange={handleChange}
+          required
+        />
+        {errors.address && <p style={{ color: 'red' }}>{errors.address}</p>}
+        <p>Educación</p>
+        <input
+          style={{ height: '45px', width:'60%', paddingLeft: '5px', borderRadius: '5px', border: '1px solid #399C7E'}}
+          type="text"
+          name="education"
+          placeholder="Educación"
+          value={form.education}
+          onChange={handleChange}
+          required
+        />
+        {errors.education && <p style={{ color: 'red' }}>{errors.education}</p>}
         <div style={{ paddingTop: '5%' }}>
           <button
             onClick={handleSubmitForm}

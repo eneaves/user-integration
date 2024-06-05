@@ -1,0 +1,48 @@
+.slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 80%; /* Ajusta el ancho según sea necesario */
+    margin: auto;
+  }
+  
+  .slider-wrapper {
+    overflow: hidden;
+    width: 100%;
+  }
+  
+  .slider {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .slider-button {
+    background-color: #399C7E;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 24px; 
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
+  
+  .slider-button.prev {
+    left: -50px; 
+  }
+  
+  .slider-button.next {
+    right: -50px; 
+  }
+  

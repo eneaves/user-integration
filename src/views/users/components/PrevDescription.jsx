@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 
 const PrevDescription = ({ descriptions }) => {
-  console.log(descriptions);
   return (
     <div>
       {descriptions?.map((des, idx) => (
-        <p key={idx}>{des.description}</p>
+        <div key={idx} style={{ marginBottom: '10px' }}>
+          <p><strong>Descripción:</strong> {des.description}</p>
+          <p><strong>Prescripción:</strong> {des.prescription}</p>
+        </div>
       ))}
     </div>
   );
